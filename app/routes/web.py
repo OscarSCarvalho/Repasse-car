@@ -167,17 +167,55 @@ def index():
     # esconde anúncios do próprio lojista logado
     veiculos = [v for v in veiculos_raw if v['lojista_id'] != meu_id]
 
-    # anexa primeira foto de cada veículo
+    # enriquece cada veículo com foto, cidade do lojista e categoria principal
     for v in veiculos:
-        row = conn.execute(
+        foto = conn.execute(
             "SELECT caminho FROM fotos_veiculo WHERE veiculo_id = ? ORDER BY ordem, id LIMIT 1",
             (v['id'],)
         ).fetchone()
-        v['foto_capa'] = row['caminho'] if row else None
+        v['foto_capa'] = foto['caminho'] if foto else None
+
+        loj = conn.execute(
+            "SELECT cidade, nome_fantasia FROM lojistas WHERE id = ?",
+            (v['lojista_id'],)
+        ).fetchone()
+        v['lojista_cidade'] = loj['cidade'] if loj else None
+        v['lojista_nome']   = loj['nome_fantasia'] if loj else None
+
+        cat = conn.execute(
+            """SELECT cd.nome FROM categorias_defeito cd
+               JOIN selos_defeito sd ON sd.categoria_id = cd.id
+               JOIN veiculo_selos vs ON vs.selo_id = sd.id
+               WHERE vs.veiculo_id = ? LIMIT 1""",
+            (v['id'],)
+        ).fetchone()
+        v['categoria_principal'] = cat['nome'] if cat else None
 
     categorias = conn.execute("SELECT * FROM categorias_defeito ORDER BY id").fetchall()
+
+    stats = conn.execute("""
+        SELECT
+            COUNT(DISTINCT v.id)          AS total_ativos,
+            COUNT(DISTINCT v.lojista_id)  AS total_lojistas,
+            MIN(v.preco)                  AS preco_min_geral,
+            MAX(v.preco)                  AS preco_max_geral
+          FROM veiculos v WHERE v.status = 'ativo'
+    """).fetchone()
+
+    # contagem por categoria para os pills
+    cat_counts = conn.execute("""
+        SELECT cd.id, cd.nome, COUNT(DISTINCT vs.veiculo_id) AS total
+          FROM categorias_defeito cd
+          JOIN selos_defeito sd ON sd.categoria_id = cd.id
+          JOIN veiculo_selos vs ON vs.selo_id = sd.id
+          JOIN veiculos v ON v.id = vs.veiculo_id AND v.status = 'ativo'
+         GROUP BY cd.id
+    """).fetchall()
+
     return render_template('veiculos/listagem.html',
                            veiculos=veiculos, categorias=categorias,
+                           cat_counts=[dict(r) for r in cat_counts],
+                           stats=dict(stats) if stats else {},
                            filtros={'marca': marca, 'cidade': cidade,
                                     'categoria': categoria,
                                     'preco_min': preco_min, 'preco_max': preco_max})

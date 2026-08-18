@@ -15,6 +15,7 @@ Marketplace B2B para compra e venda de veículos com defeito declarado entre loj
 - [Interface Web](#interface-web)
 - [Regras de Negócio](#regras-de-negócio)
 - [Testes](#testes)
+- [CI/CD](#cicd)
 - [Decisões de Arquitetura](#decisões-de-arquitetura)
 
 ---
@@ -86,7 +87,11 @@ CarApp/
 │       ├── test_auth.py
 │       ├── test_veiculos.py
 │       └── test_propostas.py   # 53 testes de integração
+├── .github/
+│   └── workflows/
+│       └── ci.yml           # GitHub Actions: testa em todo push/PR
 ├── config.py                # Config e TestConfig
+├── requirements.txt         # Dependências versionadas (flask, pytest…)
 ├── run.py                   # Entrypoint Flask
 └── .gitignore
 ```
@@ -118,7 +123,7 @@ venv\Scripts\activate
 # Linux/Mac
 source venv/bin/activate
 
-pip install flask werkzeug pytest pytest-flask
+pip install -r requirements.txt
 ```
 
 ### 3. Inicializar o banco de dados
@@ -293,10 +298,17 @@ POST /api/auth/registro
 ### Design System
 
 - **Cores primárias:** `#0d1b3e` (navy), `#4ea8ff` (accent), `#f0f2f7` (background)
-- **Sidebar:** fixa à esquerda, 240px, com seções contextuais por estado de autenticação
-- **Cards de veículo:** foto + preço em destaque + especificações + badge de status
+- **Sidebar de navegação:** fixa à esquerda, 240px, com seções contextuais por estado de autenticação
+- **Responsivo:** sidebar recolhe em mobile com botão hambúrguer e backdrop; conteúdo ocupa 100% da largura disponível (sem `max-width`)
+
+#### Tela de Listagem (`/`)
+
+- **Hero banner** com gradiente navy, busca rápida (marca + cidade) e stats em tempo real (anúncios ativos, lojistas, menor preço)
+- **Tags de filtros ativos** removíveis individualmente acima do grid
+- **Sidebar de filtros avançados:** categoria de defeito, preço mínimo/máximo e contagem por categoria com links diretos
+- **Cards de veículo:** foto com gradiente + preço sobreposto + badge de ano; corpo com badge de cidade, chip colorido por categoria de defeito (amarelo=leilão, vermelho=mecânico, azul=estético, roxo=documentação), especificações e CTA "Ver detalhes"
+- **Grid responsivo:** 2 colunas em mobile, 3 em telas médias/grandes, 4 em telas ≥ 1400px (xxl)
 - **Badges de status:** cores semânticas (verde=ativo, azul=negociação, vermelho=cancelado)
-- **Responsivo:** sidebar recolhe em mobile com botão hambúrguer e backdrop
 
 ---
 
@@ -340,6 +352,34 @@ python -m pytest tests/test_routes/ -v
 | `test_propostas.py` | 13 — Criar, aceitar, recusar, cancelar, listagem |
 
 Cada teste usa banco SQLite isolado via `tmp_path` — sem estado compartilhado entre testes.
+
+---
+
+## CI/CD
+
+O projeto usa **GitHub Actions** para rodar a suíte completa de testes automaticamente em todo push e em pull requests para `main`/`master`.
+
+### Arquivo: `.github/workflows/ci.yml`
+
+| Gatilho | Comportamento |
+|---|---|
+| `push` em qualquer branch | Roda todos os 84 testes |
+| `pull_request` para main/master | Bloqueia merge se algum teste falhar |
+
+### Pipeline
+
+```
+Checkout → Setup Python 3.12 → pip install -r requirements.txt → pytest tests/ -v
+```
+
+### Rodar CI localmente antes do push
+
+```bash
+pip install -r requirements.txt
+python -m pytest tests/ -v
+```
+
+O badge de status aparecerá no repositório GitHub automaticamente após o primeiro push com o workflow ativo.
 
 ---
 
