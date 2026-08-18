@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Ambiente virtual
+venv/
+.venv/
+env/
+.env
+
+# Banco de dados (gerado em runtime)
+database/repasse.db
+database/*.db
+
+# Uploads de usuários
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

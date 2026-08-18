@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}{{ veiculo['marca'] }} {{ veiculo['modelo'] }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <a href="{{ url_for('web.index') }}" style="font-size:.85rem;color:var(--muted);text-decoration:none;">
+      <i class="bi bi-arrow-left me-1"></i> Voltar aos anúncios
+    </a>
+    <h1 class="mt-1">{{ veiculo['marca'] }} {{ veiculo['modelo'] }} {{ veiculo['ano_modelo'] }}</h1>
+  </div>
+  {% set st = veiculo['status'] %}
+  <span class="badge-status bs-{{ st }}" style="font-size:.8rem;padding:.4em 1em;">
+    {{ st.replace('_',' ').title() }}
+  </span>
+</div>
+
+<div class="row g-4">
+
+  <!-- ── Galeria + Selos ── -->
+  <div class="col-lg-7">
+
+    {% if fotos %}
+    <div class="card mb-3" style="overflow:hidden;border-radius:14px;border:none;">
+      <div id="galeria" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for f in fotos %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <img src="{{ url_for('static', filename=f['caminho']) }}"
+                 class="d-block w-100"
+                 style="max-height:420px;object-fit:cover;"
+                 alt="Foto {{ loop.index }}"
+                 onerror="this.src='https://placehold.co/800x420?text=Foto+indisponível'">
+          </div>
+          {% endfor %}
+        </div>
+        {% if fotos|length > 1 %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#galeria" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#galeria" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="card mb-3 d-flex align-items-center justify-content-center"
+         style="height:300px;border-radius:14px;">
+      <div class="text-center" style="color:var(--muted)">
+        <i class="bi bi-camera" style="font-size:2.5rem;"></i>
+        <p class="mt-2 mb-0">Sem fotos</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Selos -->
+    {% if selos %}
+    <div class="section-label"><i class="bi bi-shield-exclamation me-1"></i>Selos de defeito / procedência</div>
+    {% for s in selos %}
+    <div class="selo-card">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="selo-title">{{ s['nome_selo'] }}</span>
+        <span class="selo-badge">{{ s['categoria'].replace('_',' ').title() }}</span>
+      </div>
+      {% if s['campos_especificos'] %}
+      <ul class="list-unstyled mb-0 mt-1" style="font-size:.82rem;color:#78350f;">
+        {% for k, v in s['campos_especificos'].items() %}
+        <li><strong>{{ k.replace('_',' ').title() }}:</strong> {{ v }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+
+  <!-- ── Painel lateral ── -->
+  <div class="col-lg-5">
+    <div class="card" style="position:sticky;top:1.5rem;">
+      <div class="card-body p-4">
+
+        <!-- Preço -->
+        <p class="mb-0" style="font-size:.8rem;color:var(--muted);">Preço anunciado</p>
+        <h2 class="fw-bold mb-1" style="color:#065f46;font-size:2rem;">{{ veiculo['preco'] | brl }}</h2>
+        {% if veiculo.get('valor_fipe') %}
+        <p style="font-size:.8rem;color:var(--muted);">
+          FIPE: {{ veiculo['valor_fipe'] | brl }}
+          <span class="ms-1"
+            style="color:{% if veiculo['preco'] < veiculo['valor_fipe'] %}#065f46{% else %}#991b1b{% endif %};font-weight:600;">
+            ({{ '%.0f'|format((veiculo['preco'] / veiculo['valor_fipe'] - 1) * 100) }}%)
+          </span>
+        </p>
+        {% endif %}
+
+        <hr style="border-color:var(--border);">
+
+        <!-- Especificações -->
+        <div class="section-label" style="margin-top:0;"><i class="bi bi-info-circle me-1"></i>Especificações</div>
+        <dl class="row mb-0" style="font-size:.875rem;">
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Quilometragem</dt>
+          <dd class="col-6 fw-semibold">{{ '{:,.0f}'.format(veiculo['kilometragem']).replace(',', '.') }} km</dd>
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Câmbio</dt>
+          <dd class="col-6 fw-semibold">{{ veiculo['cambio'].title() }}</dd>
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Combustível</dt>
+          <dd class="col-6 fw-semibold">{{ veiculo['combustivel'].title() }}</dd>
+          {% if veiculo.get('cor') %}
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Cor</dt>
+          <dd class="col-6 fw-semibold">{{ veiculo['cor'] }}</dd>
+          {% endif %}
+          {% if veiculo.get('versao') %}
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Versão</dt>
+          <dd class="col-6 fw-semibold">{{ veiculo['versao'] }}</dd>
+          {% endif %}
+          {% if veiculo.get('placa') %}
+          <dt class="col-6" style="color:var(--muted);font-weight:500;">Placa</dt>
+          <dd class="col-6 fw-semibold">{{ veiculo['placa'] }}</dd>
+          {% endif %}
+        </dl>
+
+        {% if veiculo.get('descricao') %}
+        <p style="font-size:.85rem;color:var(--muted);margin-top:.75rem;padding:.75rem;
+                  background:#f7f9fd;border-radius:8px;border:1px solid var(--border);">
+          {{ veiculo['descricao'] }}
+        </p>
+        {% endif %}
+
+        <!-- Vendedor -->
+        <div class="section-label"><i class="bi bi-building me-1"></i>Vendedor</div>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--accent-bg);
+                      display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="bi bi-shop" style="color:var(--accent)"></i>
+          </div>
+          <div>
+            <p class="mb-0 fw-semibold" style="font-size:.9rem;color:var(--navy)">{{ lojista['nome_fantasia'] }}</p>
+            <p class="mb-0" style="font-size:.78rem;color:var(--muted)">
+              {{ lojista['cidade'] }}/{{ lojista['uf'] }}
+            </p>
+          </div>
+        </div>
+
+        <!-- WhatsApp pós-aceite (dono vê) -->
+        {% if sou_dono and proposta_aceita %}
+        <div style="background:#d1fae5;border:1px solid #a7f3d0;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;">
+          <p class="mb-1 fw-semibold" style="color:#065f46;font-size:.875rem;">
+            <i class="bi bi-check-circle me-1"></i> Proposta aceita
+          </p>
+          <p class="mb-2" style="font-size:.82rem;color:#065f46;">
+            Comprador: <strong>{{ proposta_aceita['comprador_nome'] }}</strong>
+          </p>
+          <a href="https://wa.me/55{{ proposta_aceita['telefone_whatsapp']|replace(' ','')|replace('(','') |replace(')','') |replace('-','') }}"
+             class="btn btn-sm w-100" target="_blank"
+             style="background:#25d366;color:#fff;border-radius:8px;font-weight:600;">
+            <i class="bi bi-whatsapp me-1"></i> Contato via WhatsApp
+          </a>
+        </div>
+        {% endif %}
+
+        <!-- Ações dono -->
+        {% if sou_dono %}
+        <div class="section-label"><i class="bi bi-tools me-1"></i>Gerenciar</div>
+        <div class="d-flex gap-2 flex-wrap">
+          {% if veiculo['status'] == 'rascunho' %}
+          <form method="post" action="{{ url_for('web.publicar', veiculo_id=veiculo['id']) }}">
+            <button class="btn btn-navy btn-sm">
+              <i class="bi bi-broadcast me-1"></i> Publicar
+            </button>
+          </form>
+          {% endif %}
+          {% if veiculo['status'] == 'em_negociacao' %}
+          <form method="post" action="{{ url_for('web.concluir_venda', veiculo_id=veiculo['id']) }}">
+            <button class="btn btn-sm" style="background:#065f46;color:#fff;border-radius:8px;font-weight:600;">
+              <i class="bi bi-check2-circle me-1"></i> Concluir Venda
+            </button>
+          </form>
+          {% endif %}
+          {% if veiculo['status'] not in ('vendido', 'cancelado') %}
+          <form method="post" action="{{ url_for('web.cancelar', veiculo_id=veiculo['id']) }}"
+                onsubmit="return confirm('Cancelar este anúncio?')">
+            <button class="btn btn-sm"
+                    style="border:1px solid #fee2e2;background:#fff;color:#991b1b;border-radius:8px;">
+              <i class="bi bi-x-circle me-1"></i> Cancelar
+            </button>
+          </form>
+          {% endif %}
+        </div>
+
+        <!-- Proposta comprador -->
+        {% elif veiculo['status'] == 'ativo' %}
+          {% if meu_id %}
+          <div class="section-label"><i class="bi bi-send me-1"></i>Enviar Proposta</div>
+          <form method="post" action="{{ url_for('web.enviar_proposta', veiculo_id=veiculo['id']) }}">
+            <div class="mb-2">
+              <label class="form-label">Valor ofertado (R$)</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-currency-dollar"></i>
+                <input type="number" name="valor" class="form-control"
+                       step="0.01" min="0" placeholder="Ex: 28000.00" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Mensagem (opcional)</label>
+              <textarea name="mensagem" class="form-control" rows="2"
+                        placeholder="Ex: Tenho interesse, posso retirar essa semana."></textarea>
+            </div>
+            <button type="submit" class="btn btn-navy w-100">
+              <i class="bi bi-send me-1"></i> Enviar Proposta
+            </button>
+          </form>
+          {% else %}
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;
+                      padding:.85rem 1rem;text-align:center;margin-top:.5rem;">
+            <p class="mb-2" style="font-size:.875rem;color:#1e40af;">
+              Entre na conta para enviar uma proposta
+            </p>
+            <a href="{{ url_for('web.login') }}" class="btn btn-navy btn-sm">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+            </a>
+          </div>
+          {% endif %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

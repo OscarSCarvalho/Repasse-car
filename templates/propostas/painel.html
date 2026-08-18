@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% block title %}Propostas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="bi bi-chat-dots me-2" style="color:var(--accent)"></i>Propostas</h1>
+    <p>Acompanhe as propostas recebidas e enviadas</p>
+  </div>
+</div>
+
+<!-- Resumo rápido -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-lg-3">
+    <div class="card p-3 d-flex flex-row align-items-center gap-3">
+      <div style="width:44px;height:44px;border-radius:10px;background:#fef9c3;
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-inbox" style="color:#854d0e;font-size:1.2rem;"></i>
+      </div>
+      <div>
+        <p class="mb-0" style="font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;">Recebidas</p>
+        <p class="mb-0 fw-bold" style="font-size:1.4rem;color:var(--navy);">{{ recebidas|length }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card p-3 d-flex flex-row align-items-center gap-3">
+      <div style="width:44px;height:44px;border-radius:10px;background:#dbeafe;
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-send" style="color:#1e40af;font-size:1.2rem;"></i>
+      </div>
+      <div>
+        <p class="mb-0" style="font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;">Enviadas</p>
+        <p class="mb-0 fw-bold" style="font-size:1.4rem;color:var(--navy);">{{ enviadas|length }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card p-3 d-flex flex-row align-items-center gap-3">
+      <div style="width:44px;height:44px;border-radius:10px;background:#fef9c3;
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-hourglass-split" style="color:#854d0e;font-size:1.2rem;"></i>
+      </div>
+      <div>
+        <p class="mb-0" style="font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;">Pendentes</p>
+        <p class="mb-0 fw-bold" style="font-size:1.4rem;color:var(--navy);">
+          {{ (recebidas + enviadas) | selectattr('status', 'equalto', 'pendente') | list | length }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card p-3 d-flex flex-row align-items-center gap-3">
+      <div style="width:44px;height:44px;border-radius:10px;background:#d1fae5;
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-check-circle" style="color:#065f46;font-size:1.2rem;"></i>
+      </div>
+      <div>
+        <p class="mb-0" style="font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;">Aceitas</p>
+        <p class="mb-0 fw-bold" style="font-size:1.4rem;color:var(--navy);">
+          {{ (recebidas + enviadas) | selectattr('status', 'equalto', 'aceita') | list | length }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div style="border-bottom:2px solid var(--border);margin-bottom:1.5rem;display:flex;gap:.25rem;">
+  <button id="tab-rec" onclick="switchTab('rec')"
+          style="border:none;background:none;padding:.6rem 1.25rem;font-weight:700;font-size:.9rem;
+                 border-bottom:3px solid var(--navy);color:var(--navy);cursor:pointer;margin-bottom:-2px;">
+    <i class="bi bi-inbox me-1"></i> Recebidas
+    <span style="background:var(--navy);color:#fff;border-radius:20px;padding:.15em .55em;
+                 font-size:.72rem;margin-left:.3rem;">{{ recebidas|length }}</span>
+  </button>
+  <button id="tab-env" onclick="switchTab('env')"
+          style="border:none;background:none;padding:.6rem 1.25rem;font-weight:700;font-size:.9rem;
+                 color:var(--muted);cursor:pointer;margin-bottom:-2px;">
+    <i class="bi bi-send me-1"></i> Enviadas
+    <span style="background:var(--border);color:var(--muted);border-radius:20px;padding:.15em .55em;
+                 font-size:.72rem;margin-left:.3rem;">{{ enviadas|length }}</span>
+  </button>
+</div>
+
+<!-- Recebidas -->
+<div id="pane-rec">
+  {% if not recebidas %}
+  <div class="card text-center py-5">
+    <div class="card-body">
+      <i class="bi bi-inbox" style="font-size:2.5rem;color:var(--border)"></i>
+      <p class="mt-3 mb-0" style="color:var(--muted)">Nenhuma proposta recebida ainda.</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="card" style="overflow:hidden;">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Veículo</th>
+          <th>Comprador</th>
+          <th>Valor ofertado</th>
+          <th>Mensagem</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in recebidas %}
+        <tr>
+          <td style="font-weight:600;color:var(--navy);font-size:.875rem;">
+            {{ p['marca'] }} {{ p['modelo'] }} {{ p['ano_modelo'] }}
+          </td>
+          <td style="font-size:.875rem;">{{ p['comprador_nome'] }}</td>
+          <td style="font-weight:700;color:#065f46;">{{ p['valor'] | brl }}</td>
+          <td style="font-size:.82rem;color:var(--muted);max-width:180px;">
+            {{ p.get('mensagem') or '—' }}
+          </td>
+          <td><span class="badge-status bs-{{ p['status'] }}">{{ p['status'].title() }}</span></td>
+          <td style="font-size:.82rem;color:var(--muted);">{{ p['criado_em'][:10] }}</td>
+          <td>
+            {% if p['status'] == 'pendente' %}
+            <div class="d-flex gap-1">
+              <form method="post" action="{{ url_for('web.aceitar_proposta', proposta_id=p['id']) }}">
+                <button class="btn btn-sm" title="Aceitar"
+                        style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;border-radius:8px;padding:.3rem .7rem;font-weight:600;">
+                  <i class="bi bi-check-lg"></i> Aceitar
+                </button>
+              </form>
+              <form method="post" action="{{ url_for('web.recusar_proposta', proposta_id=p['id']) }}">
+                <button class="btn btn-sm" title="Recusar"
+                        style="border:1px solid #fee2e2;background:#fff;color:#991b1b;border-radius:8px;padding:.3rem .7rem;">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </form>
+            </div>
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Enviadas -->
+<div id="pane-env" style="display:none;">
+  {% if not enviadas %}
+  <div class="card text-center py-5">
+    <div class="card-body">
+      <i class="bi bi-send" style="font-size:2.5rem;color:var(--border)"></i>
+      <p class="mt-3 mb-0" style="color:var(--muted)">Você ainda não enviou nenhuma proposta.</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="card" style="overflow:hidden;">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Veículo</th>
+          <th>Vendedor</th>
+          <th>Valor ofertado</th>
+          <th>Mensagem</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in enviadas %}
+        <tr>
+          <td>
+            <a href="{{ url_for('web.detalhe_veiculo', veiculo_id=p['veiculo_id']) }}"
+               style="font-weight:600;color:var(--navy);text-decoration:none;font-size:.875rem;">
+              {{ p['marca'] }} {{ p['modelo'] }} {{ p['ano_modelo'] }}
+            </a>
+          </td>
+          <td style="font-size:.875rem;">{{ p['vendedor_nome'] }}</td>
+          <td style="font-weight:700;color:#065f46;">{{ p['valor'] | brl }}</td>
+          <td style="font-size:.82rem;color:var(--muted);max-width:180px;">
+            {{ p.get('mensagem') or '—' }}
+          </td>
+          <td><span class="badge-status bs-{{ p['status'] }}">{{ p['status'].title() }}</span></td>
+          <td style="font-size:.82rem;color:var(--muted);">{{ p['criado_em'][:10] }}</td>
+          <td>
+            {% if p['status'] == 'pendente' %}
+            <form method="post" action="{{ url_for('web.cancelar_proposta', proposta_id=p['id']) }}">
+              <button class="btn btn-sm"
+                      style="border:1px solid var(--border);background:#fff;color:var(--muted);border-radius:8px;padding:.3rem .7rem;">
+                <i class="bi bi-x-circle me-1"></i> Cancelar
+              </button>
+            </form>
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function switchTab(tab) {
+  const isRec = tab === 'rec';
+  document.getElementById('pane-rec').style.display = isRec ? 'block' : 'none';
+  document.getElementById('pane-env').style.display = isRec ? 'none' : 'block';
+
+  const styleActive = 'border:none;background:none;padding:.6rem 1.25rem;font-weight:700;font-size:.9rem;border-bottom:3px solid var(--navy);color:var(--navy);cursor:pointer;margin-bottom:-2px;';
+  const styleIdle   = 'border:none;background:none;padding:.6rem 1.25rem;font-weight:700;font-size:.9rem;color:var(--muted);cursor:pointer;margin-bottom:-2px;';
+  document.getElementById('tab-rec').style.cssText = isRec ? styleActive : styleIdle;
+  document.getElementById('tab-env').style.cssText = isRec ? styleIdle : styleActive;
+}
+</script>
+{% endblock %}

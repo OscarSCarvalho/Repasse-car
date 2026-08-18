@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Repasse{% endblock %} — CarApp</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --navy:      #0d1b3e;
+      --navy-mid:  #162d5e;
+      --accent:    #4ea8ff;
+      --accent-bg: rgba(78,168,255,.1);
+      --sidebar-w: 240px;
+      --bg:        #f0f2f7;
+      --card-bg:   #ffffff;
+      --text:      #1a2540;
+      --muted:     #6b7a99;
+      --border:    #e2e8f4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; min-height: 100vh; }
+
+    /* ────────── Sidebar ────────── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      z-index: 1000;
+      transition: transform .25s ease;
+    }
+    .sidebar-brand {
+      display: flex; align-items: center; gap: .65rem;
+      padding: 1.4rem 1.25rem 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-decoration: none;
+    }
+    .sidebar-brand .brand-icon { font-size: 1.6rem; color: var(--accent); }
+    .sidebar-brand .brand-name { font-weight: 800; font-size: .95rem; color: #fff; line-height: 1.2; }
+    .sidebar-brand .brand-sub  { font-size: .68rem; color: #7a9ccb; font-weight: 400; }
+
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+    .sidebar-section {
+      font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+      color: #5a7aa0; text-transform: uppercase;
+      padding: .75rem 1.25rem .3rem;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .6rem 1.25rem; color: #b0c8e8;
+      text-decoration: none; font-size: .875rem;
+      transition: background .15s, color .15s; position: relative;
+    }
+    .sidebar-link i { font-size: 1rem; flex-shrink: 0; }
+    .sidebar-link:hover { background: rgba(78,168,255,.12); color: #fff; }
+    .sidebar-link.active { background: rgba(78,168,255,.2); color: var(--accent); font-weight: 600; }
+    .sidebar-link.active::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+    }
+    .sidebar-footer {
+      border-top: 1px solid rgba(255,255,255,.08); padding: 1rem 1.25rem;
+    }
+    .sidebar-footer .user-name  { font-size: .8rem; font-weight: 600; color: #d0e2f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-footer .user-email { font-size: .7rem; color: #5a7aa0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn-logout {
+      width: 100%; margin-top: .65rem;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      color: #b0c8e8; font-size: .8rem; padding: .4rem; border-radius: 6px;
+      transition: background .15s; cursor: pointer;
+    }
+    .btn-logout:hover { background: rgba(220,53,69,.25); color: #ff8a8a; border-color: rgba(220,53,69,.4); }
+
+    /* Mobile toggle */
+    .sidebar-toggle {
+      display: none; position: fixed; top: .75rem; left: .75rem; z-index: 1100;
+      background: var(--navy); border: none; color: #fff;
+      width: 40px; height: 40px; border-radius: 8px; font-size: 1.2rem;
+      align-items: center; justify-content: center;
+    }
+    .sidebar-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 999;
+    }
+
+    /* ────────── Main ────────── */
+    .main-wrapper { margin-left: var(--sidebar-w); min-height: 100vh; }
+    .main-content { padding: 2rem 2.5rem 3rem; max-width: 1280px; }
+
+    /* ────────── Page header ────────── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem; flex-wrap: wrap; gap: .75rem;
+    }
+    .page-header h1 { font-size: 1.5rem; font-weight: 800; color: var(--navy); margin: 0; }
+    .page-header p  { font-size: .875rem; color: var(--muted); margin: .15rem 0 0; }
+
+    /* ────────── Cards ────────── */
+    .card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: 0 1px 4px rgba(13,27,62,.06);
+    }
+    .card-veiculo img { object-fit: cover; height: 190px; width: 100%; border-radius: 13px 13px 0 0; }
+    .card-veiculo { transition: box-shadow .2s, transform .15s; }
+    .card-veiculo:hover { box-shadow: 0 8px 24px rgba(13,27,62,.12); transform: translateY(-2px); }
+
+    /* ────────── Section label ────────── */
+    .section-label {
+      font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 1.5rem 0 .75rem; padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ────────── Form controls ────────── */
+    .form-label { font-size: .875rem; font-weight: 600; color: var(--navy); margin-bottom: .3rem; }
+    .form-control, .form-select {
+      border-color: var(--border); border-radius: 8px;
+      font-size: .9rem; padding: .55rem .85rem;
+      color: var(--text);
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(78,168,255,.2);
+    }
+    .form-control::placeholder { color: #b0bdd0; }
+
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap > .bi {
+      position: absolute; top: 50%; left: 12px;
+      transform: translateY(-50%); color: #7a9ccb; font-size: 1rem; pointer-events: none;
+    }
+    .input-icon-wrap input,
+    .input-icon-wrap select { padding-left: 2.4rem; }
+
+    /* ────────── Buttons ────────── */
+    .btn-navy {
+      background: var(--navy); border: none; color: #fff;
+      font-weight: 600; border-radius: 8px;
+      padding: .55rem 1.25rem; transition: background .2s;
+    }
+    .btn-navy:hover { background: var(--navy-mid); color: #fff; }
+
+    .btn-accent {
+      background: var(--accent); border: none; color: #fff;
+      font-weight: 600; border-radius: 8px;
+      padding: .55rem 1.25rem; transition: opacity .2s;
+    }
+    .btn-accent:hover { opacity: .88; color: #fff; }
+
+    /* ────────── Badges de status ────────── */
+    .badge-status {
+      font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+      padding: .3em .7em; border-radius: 20px; text-transform: capitalize;
+    }
+    .bs-rascunho     { background: #e8eaf0; color: #5a6580; }
+    .bs-ativo        { background: #d1fae5; color: #065f46; }
+    .bs-em_negociacao{ background: #dbeafe; color: #1e40af; }
+    .bs-vendido      { background: #1a2540; color: #e2e8f4; }
+    .bs-cancelado    { background: #fee2e2; color: #991b1b; }
+    .bs-pendente     { background: #fef9c3; color: #854d0e; }
+    .bs-aceita       { background: #d1fae5; color: #065f46; }
+    .bs-recusada     { background: #fee2e2; color: #991b1b; }
+
+    /* ────────── Tabelas ────────── */
+    .table { border-color: var(--border); }
+    .table thead th {
+      background: var(--navy); color: #c8d8f0;
+      font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; padding: .9rem 1rem; border: none;
+    }
+    .table thead th:first-child { border-radius: 10px 0 0 0; }
+    .table thead th:last-child  { border-radius: 0 10px 0 0; }
+    .table tbody tr { border-color: var(--border); }
+    .table tbody tr:hover td { background: #f7f9fd; }
+    .table tbody td { padding: .85rem 1rem; vertical-align: middle; font-size: .875rem; }
+
+    /* ────────── Filtros sidebar ────────── */
+    .filter-card { border-radius: 14px; }
+    .filter-card .card-body { padding: 1.25rem; }
+
+    /* ────────── Selo card ────────── */
+    .selo-card {
+      border: 1px solid #fde68a; background: #fffbeb;
+      border-radius: 10px; padding: .75rem 1rem; margin-bottom: .5rem;
+    }
+    .selo-card .selo-title { font-weight: 700; font-size: .9rem; color: #92400e; }
+    .selo-card .selo-badge {
+      font-size: .68rem; font-weight: 700; background: #fde68a;
+      color: #78350f; border-radius: 20px; padding: .2em .65em;
+    }
+
+    /* ────────── Alert flash ────────── */
+    .alert { border-radius: 10px; border: none; font-size: .875rem; }
+
+    /* ────────── Responsive ────────── */
+    @media (max-width: 991px) {
+      .sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-backdrop.open { display: block; }
+      .sidebar-toggle { display: flex; }
+      .main-wrapper { margin-left: 0; }
+      .main-content { padding: 1rem 1rem 3rem; padding-top: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Menu">
+  <i class="bi bi-list"></i>
+</button>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-brand" href="{{ url_for('web.index') }}">
+    <span class="brand-icon"><i class="bi bi-car-front-fill"></i></span>
+    <span>
+      <span class="brand-name">CarApp</span><br>
+      <span class="brand-sub">Repasse B2B</span>
+    </span>
+  </a>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">Marketplace</div>
+    <a class="sidebar-link {% if request.path == '/' %}active{% endif %}"
+       href="{{ url_for('web.index') }}">
+      <i class="bi bi-search"></i> Anúncios
+    </a>
+
+    {% if session.lojista_id %}
+    <div class="sidebar-section">Minha Loja</div>
+    <a class="sidebar-link {% if request.path == '/novo-anuncio' %}active{% endif %}"
+       href="{{ url_for('web.novo_anuncio') }}">
+      <i class="bi bi-plus-circle"></i> Novo Anúncio
+    </a>
+    <a class="sidebar-link {% if request.path == '/meus-anuncios' %}active{% endif %}"
+       href="{{ url_for('web.meus_anuncios') }}">
+      <i class="bi bi-card-list"></i> Meus Anúncios
+    </a>
+    <a class="sidebar-link {% if request.path == '/propostas' %}active{% endif %}"
+       href="{{ url_for('web.propostas') }}">
+      <i class="bi bi-chat-dots"></i> Propostas
+    </a>
+    {% endif %}
+
+    {% if not session.lojista_id %}
+    <div class="sidebar-section">Conta</div>
+    <a class="sidebar-link {% if request.path == '/login' %}active{% endif %}"
+       href="{{ url_for('web.login') }}">
+      <i class="bi bi-box-arrow-in-right"></i> Entrar
+    </a>
+    <a class="sidebar-link {% if request.path == '/cadastro' %}active{% endif %}"
+       href="{{ url_for('web.cadastro') }}">
+      <i class="bi bi-person-plus"></i> Cadastrar Loja
+    </a>
+    {% endif %}
+  </nav>
+
+  {% if session.lojista_id %}
+  <div class="sidebar-footer">
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <div style="width:32px;height:32px;border-radius:50%;background:rgba(78,168,255,.2);
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-building" style="color:var(--accent);font-size:.85rem;"></i>
+      </div>
+      <div style="min-width:0;">
+        <div class="user-name">Minha Conta</div>
+        <div class="user-email">Lojista logado</div>
+      </div>
+    </div>
+    <form method="post" action="{{ url_for('web.logout') }}">
+      <button type="submit" class="btn-logout">
+        <i class="bi bi-box-arrow-right"></i> Sair da conta
+      </button>
+    </form>
+  </div>
+  {% endif %}
+</aside>
+
+<!-- ── Conteúdo ── -->
+<div class="main-wrapper">
+  <div class="main-content">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in msgs %}
+      <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const sidebar   = document.getElementById('sidebar');
+  const backdrop  = document.getElementById('sidebarBackdrop');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  function openSidebar()  { sidebar.classList.add('open');  backdrop.classList.add('open'); }
+  function closeSidebar() { sidebar.classList.remove('open'); backdrop.classList.remove('open'); }
+  toggleBtn.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  backdrop.addEventListener('click', closeSidebar);
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
