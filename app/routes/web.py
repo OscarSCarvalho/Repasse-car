@@ -435,7 +435,8 @@ def propostas():
     ).fetchall()
     return render_template('propostas/painel.html',
                            recebidas=[dict(r) for r in recebidas],
-                           enviadas=[dict(r) for r in enviadas])
+                           enviadas=[dict(r) for r in enviadas],
+                           lojista_id=meu_id)
 
 
 @bp.route('/veiculo/<int:veiculo_id>/proposta', methods=['POST'])

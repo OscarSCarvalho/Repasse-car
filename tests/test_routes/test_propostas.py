@@ -130,3 +130,57 @@ class TestListagemPropostas:
 
     def test_enviadas_sem_autenticacao_401(self, client):
         assert client.get('/api/propostas/enviadas').status_code == 401
+
+
+class TestMensagens:
+
+    def test_listar_mensagens_vazio(self, client):
+        _, pid = _setup_proposta(client)
+        registrar_e_logar(client, LOJISTA_1)
+        r = client.get(f'/api/propostas/{pid}/mensagens')
+        assert r.status_code == 200
+        assert r.json['mensagens'] == []
+
+    def test_enviar_mensagem_comprador(self, client):
+        _, pid = _setup_proposta(client)
+        registrar_e_logar(client, LOJISTA_2)
+        r = client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': 'Olá, ainda disponível?'})
+        assert r.status_code == 201
+        assert r.json['id']
+
+    def test_enviar_mensagem_vendedor(self, client):
+        _, pid = _setup_proposta(client)
+        registrar_e_logar(client, LOJISTA_1)
+        r = client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': 'Sim, disponível!'})
+        assert r.status_code == 201
+
+    def test_listar_mensagens_retorna_historico(self, client):
+        _, pid = _setup_proposta(client)
+        registrar_e_logar(client, LOJISTA_2)
+        client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': 'Primeira'})
+        client.post('/api/auth/logout')
+        registrar_e_logar(client, LOJISTA_1)
+        client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': 'Segunda'})
+        r = client.get(f'/api/propostas/{pid}/mensagens')
+        assert len(r.json['mensagens']) == 2
+        assert r.json['mensagens'][0]['conteudo'] == 'Primeira'
+
+    def test_terceiro_nao_pode_acessar_mensagens_403(self, client):
+        _, pid = _setup_proposta(client)
+        from tests.test_routes.conftest import LOJISTA_1, LOJISTA_2
+        LOJISTA_3 = {**LOJISTA_2, 'email': 'tres@teste.com', 'cnpj': '33444555000181', 'nome_fantasia': 'Loja Três', 'razao_social': 'Loja Três Ltda'}
+        registrar_e_logar(client, LOJISTA_3)
+        assert client.get(f'/api/propostas/{pid}/mensagens').status_code == 403
+
+    def test_mensagem_sem_autenticacao_401(self, client):
+        _, pid = _setup_proposta(client)
+        assert client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': 'x'}).status_code == 401
+
+    def test_mensagem_conteudo_vazio_422(self, client):
+        _, pid = _setup_proposta(client)
+        registrar_e_logar(client, LOJISTA_2)
+        assert client.post(f'/api/propostas/{pid}/mensagens', json={'conteudo': '   '}).status_code == 422
+
+    def test_mensagem_proposta_inexistente_404(self, client):
+        registrar_e_logar(client, LOJISTA_1)
+        assert client.get('/api/propostas/9999/mensagens').status_code == 404

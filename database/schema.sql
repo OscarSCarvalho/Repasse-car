@@ -93,3 +93,12 @@ CREATE INDEX IF NOT EXISTS idx_fotos_veiculo_vid   ON fotos_veiculo(veiculo_id);
 CREATE INDEX IF NOT EXISTS idx_fotos_selo          ON fotos_veiculo(veiculo_selo_id);
 CREATE INDEX IF NOT EXISTS idx_propostas_veiculo   ON propostas(veiculo_id);
 CREATE INDEX IF NOT EXISTS idx_propostas_comprador ON propostas(lojista_comprador_id);
+
+CREATE TABLE IF NOT EXISTS mensagens (
+    id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+    proposta_id INTEGER  NOT NULL REFERENCES propostas(id) ON DELETE CASCADE,
+    lojista_id  INTEGER  NOT NULL REFERENCES lojistas(id),
+    conteudo    TEXT     NOT NULL,
+    criado_em   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_mensagens_proposta ON mensagens(proposta_id);

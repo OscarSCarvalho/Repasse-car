@@ -4,6 +4,7 @@ from app.session import login_required, lojista_id_sessao
 from app.models import (
     criar_proposta, buscar_proposta, atualizar_status_proposta,
     buscar_veiculo, atualizar_status_veiculo,
+    enviar_mensagem, listar_mensagens_proposta,
 )
 from app.business_rules import validar_criacao_proposta, validar_transicao_status
 
@@ -73,6 +74,40 @@ def atualizar_status(proposta_id: int):
 
     conn.commit()
     return {'mensagem': f"Proposta {novo_status}.", 'status': novo_status}, 200
+
+
+@bp.route('/propostas/<int:proposta_id>/mensagens', methods=['GET'])
+@login_required
+def listar_mensagens(proposta_id: int):
+    conn = get_db()
+    meu_id = lojista_id_sessao()
+    proposta = buscar_proposta(conn, proposta_id)
+    if not proposta:
+        abort(404)
+    veiculo = buscar_veiculo(conn, proposta['veiculo_id'])
+    if proposta['lojista_comprador_id'] != meu_id and veiculo['lojista_id'] != meu_id:
+        abort(403)
+    return {'mensagens': listar_mensagens_proposta(conn, proposta_id)}, 200
+
+
+@bp.route('/propostas/<int:proposta_id>/mensagens', methods=['POST'])
+@login_required
+def enviar_msg(proposta_id: int):
+    conn = get_db()
+    meu_id = lojista_id_sessao()
+    proposta = buscar_proposta(conn, proposta_id)
+    if not proposta:
+        abort(404)
+    veiculo = buscar_veiculo(conn, proposta['veiculo_id'])
+    if proposta['lojista_comprador_id'] != meu_id and veiculo['lojista_id'] != meu_id:
+        abort(403)
+    dados = request.get_json(silent=True) or {}
+    conteudo = (dados.get('conteudo') or '').strip()
+    if not conteudo:
+        return {'erro': "'conteudo' é obrigatório."}, 422
+    mid = enviar_mensagem(conn, proposta_id, meu_id, conteudo)
+    conn.commit()
+    return {'id': mid, 'mensagem': 'Mensagem enviada.'}, 201
 
 
 @bp.route('/propostas/recebidas', methods=['GET'])

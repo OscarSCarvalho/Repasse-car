@@ -236,6 +236,31 @@ def listar_propostas_veiculo(conn: sqlite3.Connection, veiculo_id: int) -> list[
     return [dict(r) for r in rows]
 
 
+# ── Mensagens ─────────────────────────────────────────────────────────────────
+
+def enviar_mensagem(conn: sqlite3.Connection, proposta_id: int, lojista_id: int, conteudo: str) -> int:
+    cur = conn.execute(
+        "INSERT INTO mensagens (proposta_id, lojista_id, conteudo) VALUES (?, ?, ?)",
+        (proposta_id, lojista_id, conteudo),
+    )
+    return cur.lastrowid
+
+
+def listar_mensagens_proposta(conn: sqlite3.Connection, proposta_id: int) -> list[dict]:
+    rows = conn.execute(
+        """
+        SELECT m.id, m.proposta_id, m.lojista_id, m.conteudo, m.criado_em,
+               l.nome_fantasia
+          FROM mensagens m
+          JOIN lojistas l ON l.id = m.lojista_id
+         WHERE m.proposta_id = ?
+         ORDER BY m.criado_em ASC
+        """,
+        (proposta_id,),
+    ).fetchall()
+    return [dict(r) for r in rows]
+
+
 # ── Pesquisa pública ──────────────────────────────────────────────────────────
 
 def pesquisar_veiculos(
