@@ -1,0 +1,1196 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "carapp-monitor-v2",
+    "title": "CarApp - Monitor de Producao",
+    "tags": [
+      "carapp",
+      "flask"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "5s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Lojistas",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "lojistas",
+                "text": "Lojistas",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "green",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Veiculos",
+        "gridPos": {
+          "x": 4,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos",
+                "text": "Veiculos",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "orange",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "Propostas",
+        "gridPos": {
+          "x": 8,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "propostas",
+                "text": "Propostas",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Mensagens",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "mensagens",
+                "text": "Mensagens",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "yellow",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 5,
+        "type": "stat",
+        "title": "Fotos",
+        "gridPos": {
+          "x": 16,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "fotos",
+                "text": "Fotos",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "purple",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 6,
+        "type": "stat",
+        "title": "Uptime (s)",
+        "gridPos": {
+          "x": 20,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "uptime_seconds",
+                "text": "Uptime (s)",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "grey",
+              "mode": "fixed"
+            },
+            "unit": "s",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 10,
+        "type": "stat",
+        "title": "Total Requisicoes",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "total_requests",
+                "text": "Total Requisicoes",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 11,
+        "type": "stat",
+        "title": "Total Erros 4/5xx",
+        "gridPos": {
+          "x": 6,
+          "y": 4,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "total_errors",
+                "text": "Total Erros 4/5xx",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "red",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 12,
+        "type": "stat",
+        "title": "Taxa de Erro %",
+        "gridPos": {
+          "x": 12,
+          "y": 4,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "taxa_erro_pct",
+                "text": "Taxa de Erro %",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "orange",
+              "mode": "fixed"
+            },
+            "unit": "percent",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 20,
+        "type": "stat",
+        "title": "Rascunho",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos_por_status.rascunho",
+                "text": "Rascunho",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "grey",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 21,
+        "type": "stat",
+        "title": "Ativo",
+        "gridPos": {
+          "x": 4,
+          "y": 8,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos_por_status.ativo",
+                "text": "Ativo",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "green",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 22,
+        "type": "stat",
+        "title": "Negociacao",
+        "gridPos": {
+          "x": 8,
+          "y": 8,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos_por_status.em_negociacao",
+                "text": "Negociacao",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "yellow",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 23,
+        "type": "stat",
+        "title": "Vendido",
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos_por_status.vendido",
+                "text": "Vendido",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 24,
+        "type": "stat",
+        "title": "Cancelado",
+        "gridPos": {
+          "x": 16,
+          "y": 8,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "",
+            "columns": [
+              {
+                "selector": "veiculos_por_status.cancelado",
+                "text": "Cancelado",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "justifyMode": "center",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "red",
+              "mode": "fixed"
+            },
+            "unit": "short",
+            "mappings": []
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 30,
+        "type": "bargauge",
+        "title": "Requisicoes por Endpoint (Top 10)",
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 12,
+          "h": 10
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "requests_by_endpoint",
+            "columns": [
+              {
+                "selector": "endpoint",
+                "text": "Endpoint",
+                "type": "string"
+              },
+              {
+                "selector": "count",
+                "text": "count",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "/^(count|errors)$/"
+          },
+          "displayMode": "gradient",
+          "valueMode": "color",
+          "text": {}
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            },
+            "custom": {
+              "fillOpacity": 80
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 31,
+        "type": "bargauge",
+        "title": "Erros por Endpoint",
+        "gridPos": {
+          "x": 12,
+          "y": 12,
+          "w": 12,
+          "h": 10
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "errors_by_endpoint",
+            "columns": [
+              {
+                "selector": "endpoint",
+                "text": "Endpoint",
+                "type": "string"
+              },
+              {
+                "selector": "errors",
+                "text": "errors",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "/^(count|errors)$/"
+          },
+          "displayMode": "gradient",
+          "valueMode": "color",
+          "text": {}
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "red",
+              "mode": "fixed"
+            },
+            "custom": {
+              "fillOpacity": 80
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 40,
+        "type": "table",
+        "title": "Tabela — Requisicoes por Endpoint",
+        "gridPos": {
+          "x": 0,
+          "y": 22,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "requests_by_endpoint",
+            "columns": [
+              {
+                "selector": "endpoint",
+                "text": "Endpoint",
+                "type": "string"
+              },
+              {
+                "selector": "count",
+                "text": "Requisicoes",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "show": false
+          },
+          "showHeader": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto"
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 41,
+        "type": "table",
+        "title": "Tabela — Erros por Endpoint",
+        "gridPos": {
+          "x": 12,
+          "y": 22,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "json",
+            "source": "url",
+            "format": "table",
+            "url": "http://localhost:5000/metrics/json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "errors_by_endpoint",
+            "columns": [
+              {
+                "selector": "endpoint",
+                "text": "Endpoint",
+                "type": "string"
+              },
+              {
+                "selector": "errors",
+                "text": "Erros",
+                "type": "number"
+              }
+            ],
+            "filters": []
+          }
+        ],
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "show": false
+          },
+          "showHeader": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto"
+            }
+          },
+          "overrides": []
+        }
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true,
+  "message": "v2 - JSON puro sem UQL"
+}

@@ -26,11 +26,21 @@ def create_app(config=None):
     from app.routes.veiculos import bp as veiculos_bp
     from app.routes.propostas import bp as propostas_bp
     from app.routes.web import bp as web_bp
+    from app.routes.metrics import bp as metrics_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(veiculos_bp, url_prefix='/api')
     app.register_blueprint(propostas_bp, url_prefix='/api')
     app.register_blueprint(web_bp)
+    app.register_blueprint(metrics_bp)
+
+    from app.routes.metrics import record_request
+
+    @app.after_request
+    def _registrar_metrica(response):
+        if not request.path.startswith('/metrics'):
+            record_request(request.path, response.status_code)
+        return response
 
     @app.errorhandler(401)
     def _nao_autenticado(e):

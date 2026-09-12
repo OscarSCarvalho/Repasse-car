@@ -1,0 +1,749 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "carapp-monitor-v1",
+    "title": "CarApp — Monitor de Produção",
+    "tags": [
+      "carapp",
+      "flask",
+      "prometheus"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "5s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Lojistas",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_lojistas_total\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Veículos",
+        "gridPos": {
+          "x": 4,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_veiculos_total\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "Propostas",
+        "gridPos": {
+          "x": 8,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_propostas_total\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Mensagens",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_mensagens_total\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 5,
+        "type": "stat",
+        "title": "Fotos",
+        "gridPos": {
+          "x": 16,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_fotos_total\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 6,
+        "type": "stat",
+        "title": "Uptime (s)",
+        "gridPos": {
+          "x": 20,
+          "y": 0,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/^carapp_uptime_seconds\\\\s+(\\\\d+)/gm\" | project \"value\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 10,
+        "type": "stat",
+        "title": "Total Requisições",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_requests_total\\\\S*\\\\s+([\\\\d.]+)/gm\" | project \"requests\" as tofloat(\"$1\") | summarize sum(\"requests\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "blue",
+              "mode": "fixed"
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 11,
+        "type": "stat",
+        "title": "Total Erros",
+        "gridPos": {
+          "x": 6,
+          "y": 4,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_errors_total\\\\S*\\\\s+([\\\\d.]+)/gm\" | project \"errors\" as tofloat(\"$1\") | summarize sum(\"errors\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "red",
+              "mode": "fixed"
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 20,
+        "type": "text",
+        "title": "Métricas ao Vivo — Fonte Prometheus",
+        "gridPos": {
+          "x": 12,
+          "y": 4,
+          "w": 12,
+          "h": 8
+        },
+        "options": {
+          "mode": "html",
+          "content": "<div style='font-family:monospace;font-size:13px;padding:8px'>Abra <a href='http://localhost:5000/metrics' target='_blank' style='color:#f97316'>http://localhost:5000/metrics</a> para ver as métricas brutas em tempo real.<br><br>Dashboard HTML embutido: <a href='http://localhost:5000/dashboard.html' target='_blank' style='color:#22c55e'>http://localhost:5000/dashboard.html</a></div>"
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 30,
+        "type": "table",
+        "title": "Requisições por Endpoint",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_requests_total\\{endpoint=\\\"([^\\\"]+)\\\"\\}\\s+([\\d.]+)/gm\" | project \"endpoint\" as \"$1\", \"count\" as tofloat(\"$2\") | order by \"count\" desc"
+          }
+        ],
+        "options": {
+          "cellHeight": "sm",
+          "sortBy": [
+            {
+              "displayName": "count",
+              "desc": true
+            }
+          ]
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 31,
+        "type": "table",
+        "title": "Erros por Endpoint",
+        "gridPos": {
+          "x": 12,
+          "y": 12,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_errors_total\\{endpoint=\\\"([^\\\"]+)\\\"\\}\\s+([\\d.]+)/gm\" | project \"endpoint\" as \"$1\", \"errors\" as tofloat(\"$2\") | order by \"errors\" desc"
+          }
+        ],
+        "options": {
+          "cellHeight": "sm"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "red",
+              "mode": "fixed"
+            }
+          },
+          "overrides": []
+        }
+      },
+      {
+        "id": 40,
+        "type": "stat",
+        "title": "Veículos — Rascunho",
+        "gridPos": {
+          "x": 0,
+          "y": 20,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_veiculos_por_status\\{status=\\\"rascunho\\\"\\}\\s+([\\d.]+)/gm\" | project \"count\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 41,
+        "type": "stat",
+        "title": "Veículos — Ativo",
+        "gridPos": {
+          "x": 4,
+          "y": 20,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_veiculos_por_status\\{status=\\\"ativo\\\"\\}\\s+([\\d.]+)/gm\" | project \"count\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 42,
+        "type": "stat",
+        "title": "Veículos — Negociação",
+        "gridPos": {
+          "x": 8,
+          "y": 20,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_veiculos_por_status\\{status=\\\"em_negociacao\\\"\\}\\s+([\\d.]+)/gm\" | project \"count\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 43,
+        "type": "stat",
+        "title": "Veículos — Vendido",
+        "gridPos": {
+          "x": 12,
+          "y": 20,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_veiculos_por_status\\{status=\\\"vendido\\\"\\}\\s+([\\d.]+)/gm\" | project \"count\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      },
+      {
+        "id": 44,
+        "type": "stat",
+        "title": "Veículos — Cancelado",
+        "gridPos": {
+          "x": 16,
+          "y": 20,
+          "w": 4,
+          "h": 4
+        },
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dfxzddg2wkbnke"
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dfxzddg2wkbnke"
+            },
+            "type": "uql",
+            "source": "url",
+            "format": "dataframe",
+            "url": "http://localhost:5000/metrics",
+            "url_options": {
+              "method": "GET"
+            },
+            "parser": "uql",
+            "uql": "parse-text \"/carapp_veiculos_por_status\\{status=\\\"cancelado\\\"\\}\\s+([\\d.]+)/gm\" | project \"count\" as tofloat(\"$1\")"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        }
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true,
+  "message": "Criado pelo script ATHOS"
+}

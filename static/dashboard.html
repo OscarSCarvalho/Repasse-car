@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarApp — Dashboard de Monitoramento</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --accent: #f97316;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  header {
+    background: var(--navy);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--accent);
+  }
+  header h1 { font-size: 1.3rem; font-weight: 700; }
+  header h1 span { color: var(--accent); }
+  #status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+  #dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  #uptime { font-size: 0.75rem; color: var(--muted); }
+
+  .grid { display: grid; gap: 16px; padding: 24px 32px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .grid-wide { display: grid; gap: 16px; padding: 0 32px 24px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+  .card-value { font-size: 2.4rem; font-weight: 700; line-height: 1; }
+  .card-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  .green { color: var(--green); }
+  .red   { color: var(--red); }
+  .yellow{ color: var(--yellow); }
+  .blue  { color: var(--blue); }
+  .accent{ color: var(--accent); }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; }
+  .bar-label { width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); flex-shrink: 0; }
+  .bar-wrap { flex: 1; background: var(--border); border-radius: 4px; height: 18px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; min-width: 2px; }
+  .bar-count { width: 50px; text-align: right; font-weight: 600; }
+
+  .status-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .status-pill {
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; min-width: 100px;
+  }
+  .status-pill .val { font-size: 1.6rem; font-weight: 700; }
+  .status-pill .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+  .timeline { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; max-height: 280px; overflow-y: auto; }
+  .tl-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .tl-path { color: var(--text); font-family: monospace; }
+  .tl-count { font-weight: 600; color: var(--blue); }
+  .tl-err { font-weight: 600; color: var(--red); }
+
+  #refresh-info { text-align: center; padding: 8px; color: var(--muted); font-size: 0.75rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CarApp <span>Monitor</span></h1>
+  <div id="status">
+    <div id="dot"></div>
+    <span id="status-text">Conectando...</span>
+    <span id="uptime"></span>
+  </div>
+</header>
+
+<!-- Stat cards -->
+<div class="grid" id="stat-cards">
+  <div class="card"><div class="card-title">Lojistas</div><div class="card-value green" id="v-lojistas">—</div><div class="card-sub">cadastrados</div></div>
+  <div class="card"><div class="card-title">Veículos</div><div class="card-value accent" id="v-veiculos">—</div><div class="card-sub">total</div></div>
+  <div class="card"><div class="card-title">Propostas</div><div class="card-value blue" id="v-propostas">—</div><div class="card-sub">enviadas</div></div>
+  <div class="card"><div class="card-title">Mensagens</div><div class="card-value yellow" id="v-mensagens">—</div><div class="card-sub">no chat</div></div>
+  <div class="card"><div class="card-title">Fotos</div><div class="card-value" id="v-fotos">—</div><div class="card-sub">de veículos</div></div>
+  <div class="card"><div class="card-title">Requisições</div><div class="card-value green" id="v-req">—</div><div class="card-sub">total HTTP</div></div>
+  <div class="card"><div class="card-title">Erros 4xx/5xx</div><div class="card-value red" id="v-err">—</div><div class="card-sub">total</div></div>
+  <div class="card"><div class="card-title">Taxa de Erro</div><div class="card-value" id="v-taxa">—</div><div class="card-sub">%</div></div>
+</div>
+
+<!-- Wide charts -->
+<div class="grid-wide">
+
+  <div class="card">
+    <div class="card-title">Veículos por Status</div>
+    <div class="status-grid" id="status-pills"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Requisições por Endpoint (Top 10)</div>
+    <div class="bar-chart" id="req-bars"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Erros por Endpoint</div>
+    <div class="bar-chart" id="err-bars"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Todas as Rotas — Detalhe</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+</div>
+
+<div id="refresh-info">Atualiza automaticamente a cada <strong>3 segundos</strong> · Fonte: <code>http://localhost:5000/metrics</code></div>
+
+<script>
+const METRICS_URL = 'http://localhost:5000/metrics';
+
+function parseMetrics(text) {
+  const result = { gauges: {}, counters: {} };
+  const lines = text.split('\n').filter(l => l && !l.startsWith('#'));
+  for (const line of lines) {
+    const m = line.match(/^(\S+?)(?:\{([^}]*)\})?\s+([\d.e+\-]+)/);
+    if (!m) continue;
+    const [, name, labels, val] = m;
+    const v = parseFloat(val);
+    if (name.includes('requests_total') || name.includes('errors_total')) {
+      const ep = labels ? labels.match(/endpoint="([^"]+)"/)?.[1] || '' : '';
+      result.counters[name] = result.counters[name] || {};
+      result.counters[name][ep] = v;
+    } else if (labels) {
+      const key = labels.replace(/"/g,'').replace(/=/g,':');
+      result.gauges[`${name}[${key}]`] = v;
+    } else {
+      result.gauges[name] = v;
+    }
+  }
+  return result;
+}
+
+function statusColor(s) {
+  return { rascunho:'#94a3b8', ativo:'#22c55e', em_negociacao:'#eab308', vendido:'#3b82f6', cancelado:'#ef4444' }[s] || '#e2e8f0';
+}
+function statusLabel(s) {
+  return { rascunho:'Rascunho', ativo:'Ativo', em_negociacao:'Negociação', vendido:'Vendido', cancelado:'Cancelado' }[s] || s;
+}
+
+function renderBars(containerId, data, color) {
+  const el = document.getElementById(containerId);
+  const sorted = Object.entries(data).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const max = sorted[0]?.[1] || 1;
+  el.innerHTML = sorted.map(([ep, val]) => `
+    <div class="bar-row">
+      <div class="bar-label" title="${ep}">${ep || '/'}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${(val/max*100).toFixed(1)}%;background:${color}"></div></div>
+      <div class="bar-count">${val}</div>
+    </div>`).join('');
+}
+
+function fmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : n; }
+
+async function refresh() {
+  try {
+    const res = await fetch(METRICS_URL);
+    if (!res.ok) throw new Error(res.status);
+    const text = await res.text();
+    const { gauges, counters } = parseMetrics(text);
+
+    document.getElementById('status-text').textContent = 'Online';
+    document.getElementById('dot').style.background = 'var(--green)';
+
+    const uptime = gauges['carapp_uptime_seconds'] || 0;
+    const h = Math.floor(uptime/3600), m = Math.floor((uptime%3600)/60), s = Math.floor(uptime%60);
+    document.getElementById('uptime').textContent = `· uptime ${h}h ${m}m ${s}s`;
+
+    document.getElementById('v-lojistas').textContent = gauges['carapp_lojistas_total'] ?? '—';
+    document.getElementById('v-veiculos').textContent = gauges['carapp_veiculos_total'] ?? '—';
+    document.getElementById('v-propostas').textContent = gauges['carapp_propostas_total'] ?? '—';
+    document.getElementById('v-mensagens').textContent = gauges['carapp_mensagens_total'] ?? '—';
+    document.getElementById('v-fotos').textContent = gauges['carapp_fotos_total'] ?? '—';
+
+    const reqMap = counters['carapp_requests_total'] || {};
+    const errMap = counters['carapp_errors_total'] || {};
+    const totalReq = Object.values(reqMap).reduce((a,b)=>a+b,0);
+    const totalErr = Object.values(errMap).reduce((a,b)=>a+b,0);
+    const taxa = totalReq ? ((totalErr/totalReq)*100).toFixed(1) : '0.0';
+
+    document.getElementById('v-req').textContent = fmt(totalReq);
+    document.getElementById('v-err').textContent = fmt(totalErr);
+    const taxaEl = document.getElementById('v-taxa');
+    taxaEl.textContent = taxa + '%';
+    taxaEl.className = 'card-value ' + (parseFloat(taxa) > 10 ? 'red' : parseFloat(taxa) > 5 ? 'yellow' : 'green');
+
+    // Status pills
+    const statuses = ['rascunho','ativo','em_negociacao','vendido','cancelado'];
+    document.getElementById('status-pills').innerHTML = statuses.map(s => {
+      const v = gauges[`carapp_veiculos_por_status[status:${s}]`] ?? 0;
+      return `<div class="status-pill"><div class="val" style="color:${statusColor(s)}">${v}</div><div class="lbl">${statusLabel(s)}</div></div>`;
+    }).join('');
+
+    renderBars('req-bars', reqMap, 'var(--blue)');
+    renderBars('err-bars', errMap, 'var(--red)');
+
+    // Timeline
+    const allEps = new Set([...Object.keys(reqMap), ...Object.keys(errMap)]);
+    const rows = [...allEps].sort((a,b)=>(reqMap[b]||0)-(reqMap[a]||0));
+    document.getElementById('timeline').innerHTML = rows.map(ep => `
+      <div class="tl-row">
+        <span class="tl-path">${ep || '/'}</span>
+        <span style="display:flex;gap:16px">
+          <span class="tl-count">${reqMap[ep]||0} req</span>
+          <span class="tl-err">${errMap[ep]||0} err</span>
+        </span>
+      </div>`).join('') || '<div style="color:var(--muted);font-size:.8rem;padding:8px">Sem tráfego ainda — rode load_test.py</div>';
+
+  } catch(e) {
+    document.getElementById('status-text').textContent = 'Offline';
+    document.getElementById('dot').style.background = 'var(--red)';
+    document.getElementById('uptime').textContent = '';
+  }
+}
+
+refresh();
+setInterval(refresh, 3000);
+</script>
+</body>
+</html>

@@ -23,7 +23,6 @@ from app.models import (
 from app.business_rules import (
     validar_cnpj, validar_transicao_status,
     validar_publicacao_veiculo, validar_criacao_proposta,
-    validar_transicao_status,
 )
 
 bp = Blueprint('web', __name__)
@@ -167,29 +166,53 @@ def index():
     # esconde anúncios do próprio lojista logado
     veiculos = [v for v in veiculos_raw if v['lojista_id'] != meu_id]
 
-    # enriquece cada veículo com foto, cidade do lojista e categoria principal
-    for v in veiculos:
-        foto = conn.execute(
-            "SELECT caminho FROM fotos_veiculo WHERE veiculo_id = ? ORDER BY ordem, id LIMIT 1",
-            (v['id'],)
-        ).fetchone()
-        v['foto_capa'] = foto['caminho'] if foto else None
+    # enriquece todos os veículos de uma vez (batch, sem N+1)
+    if veiculos:
+        ids = [v['id'] for v in veiculos]
+        ph = ','.join('?' * len(ids))
 
-        loj = conn.execute(
-            "SELECT cidade, nome_fantasia FROM lojistas WHERE id = ?",
-            (v['lojista_id'],)
-        ).fetchone()
-        v['lojista_cidade'] = loj['cidade'] if loj else None
-        v['lojista_nome']   = loj['nome_fantasia'] if loj else None
+        fotos_map = {
+            r['veiculo_id']: r['caminho']
+            for r in conn.execute(
+                f"""SELECT veiculo_id, caminho FROM fotos_veiculo
+                    WHERE id IN (
+                        SELECT MIN(id) FROM fotos_veiculo
+                        WHERE veiculo_id IN ({ph})
+                        GROUP BY veiculo_id
+                    )""",
+                ids,
+            ).fetchall()
+        }
 
-        cat = conn.execute(
-            """SELECT cd.nome FROM categorias_defeito cd
-               JOIN selos_defeito sd ON sd.categoria_id = cd.id
-               JOIN veiculo_selos vs ON vs.selo_id = sd.id
-               WHERE vs.veiculo_id = ? LIMIT 1""",
-            (v['id'],)
-        ).fetchone()
-        v['categoria_principal'] = cat['nome'] if cat else None
+        loj_ids = list({v['lojista_id'] for v in veiculos})
+        loj_ph = ','.join('?' * len(loj_ids))
+        loj_map = {
+            r['id']: dict(r)
+            for r in conn.execute(
+                f"SELECT id, cidade, nome_fantasia FROM lojistas WHERE id IN ({loj_ph})",
+                loj_ids,
+            ).fetchall()
+        }
+
+        cat_map = {
+            r['veiculo_id']: r['nome']
+            for r in conn.execute(
+                f"""SELECT vs.veiculo_id, cd.nome
+                    FROM veiculo_selos vs
+                    JOIN selos_defeito sd      ON sd.id = vs.selo_id
+                    JOIN categorias_defeito cd ON cd.id = sd.categoria_id
+                    WHERE vs.veiculo_id IN ({ph})
+                    GROUP BY vs.veiculo_id""",
+                ids,
+            ).fetchall()
+        }
+
+        for v in veiculos:
+            v['foto_capa'] = fotos_map.get(v['id'])
+            loj = loj_map.get(v['lojista_id'], {})
+            v['lojista_cidade'] = loj.get('cidade')
+            v['lojista_nome'] = loj.get('nome_fantasia')
+            v['categoria_principal'] = cat_map.get(v['id'])
 
     categorias = conn.execute("SELECT * FROM categorias_defeito ORDER BY id").fetchall()
 
